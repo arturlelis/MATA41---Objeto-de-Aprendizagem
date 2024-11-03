@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Objetos de Aprendizagem em Geometria</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f0f8ff;
+    }
+    .container {
+      width: 90%;
+      max-width: 800px;
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .game-section {
+      margin-top: 20px;
+      padding: 20px;
+      border-top: 1px solid #ddd;
+    }
+    .game-container, #game-container {
+      margin-top: 20px;
+    }
+    .shape-container {
+      margin: 20px 0;
+      padding: 20px;
+      border: 2px dashed #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 150px;
+    }
+    .shape {
+      width: 100px;
+      height: 100px;
+    }
+    .circle {
+      border-radius: 50%;
+      background-color: #ff6347;
+    }
+    .square {
+      background-color: #4682b4;
+    }
+    .triangle {
+      width: 0;
+      height: 0;
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
+      border-bottom: 100px solid #32cd32;
+    }
+    .options {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+    .option, button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .option:hover, button:hover {
+      background-color: #0056b3;
+    }
+    .score, .input-section {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #333;
+    }
+    .feedback {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .correct {
+      color: green;
+    }
+    .incorrect {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Objetos de Aprendizagem em Geometria</h1>
+
+    <!-- Botão para iniciar o Jogo de Formas Geométricas -->
+    <button id="startShapeGameButton" onclick="startShapeGame()">Iniciar Jogo de Formas Geométricas</button>
+
+    <!-- Jogo de Formas Geométricas (inicialmente escondido) -->
+    <div id="shapeGameSection" class="game-section" style="display: none;">
+      <h2>Jogo de Formas Geométricas</h2>
+      <div class="game-container">
+        <div class="shape-container">
+          <div id="shape" class="shape"></div>
+        </div>
+        <div class="options">
+          <button class="option" onclick="checkShapeAnswer('Círculo')">Círculo</button>
+          <button class="option" onclick="checkShapeAnswer('Quadrado')">Quadrado</button>
+          <button class="option" onclick="checkShapeAnswer('Triângulo')">Triângulo</button>
+        </div>
+        <div class="score">Pontuação: <span id="shapeScore">0</span></div>
+        <div id="shapeFeedback" class="feedback"></div>
+      </div>
+    </div>
+
+    <!-- Desafio de Geometria -->
+    <div class="game-section">
+      <h2>Desafio de Geometria</h2>
+      <div id="game-container">
+        <div class="question">Clique em "Iniciar Jogo" para começar</div>
+        <button id="startButton" onclick="startQuizGame()">Iniciar Jogo</button>
+        <div class="result"></div>
+        <div class="score"></div>
+        <div class="input-section" style="display: none;">
+          <input type="number" id="userAnswer" placeholder="Sua resposta">
+          <button onclick="submitAnswer()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Função para iniciar o Jogo de Formas Geométricas
+    function startShapeGame() {
+      document.getElementById("startShapeGameButton").style.display = "none"; // Esconde o botão de iniciar
+      document.getElementById("shapeGameSection").style.display = "block"; // Mostra o jogo de formas geométricas
+      randomShape(); // Gera uma forma inicial
+    }
+
+    // Jogo de Formas Geométricas
+    let shapeScore = 0;
+    const shapes = [
+      { name: "Círculo", class: "circle" },
+      { name: "Quadrado", class: "square" },
+      { name: "Triângulo", class: "triangle" },
+    ];
+
+    function randomShape() {
+      const shapeContainer = document.getElementById("shape");
+      const randomIndex = Math.floor(Math.random() * shapes.length);
+      const shape = shapes[randomIndex];
+      shapeContainer.className = "shape " + shape.class;
+      shapeContainer.setAttribute("data-name", shape.name);
+    }
+
+    function checkShapeAnswer(answer) {
+      const shapeContainer = document.getElementById("shape");
+      const correctAnswer = shapeContainer.getAttribute("data-name");
+      const feedback = document.getElementById("shapeFeedback");
+
+      if (answer === correctAnswer) {
+        shapeScore += 10;
+        feedback.textContent = "Correto! Você ganhou 10 pontos.";
+        feedback.className = "feedback correct";
+      } else {
+        shapeScore -= 10;
+        feedback.textContent = "Incorreto! Você perdeu 10 pontos.";
+        feedback.className = "feedback incorrect";
+      }
+
+      if (shapeScore < 0) {
+        shapeScore = 0;
+      }
+
+      document.getElementById("shapeScore").textContent = shapeScore;
+      randomShape();
+    }
+
+    // Desafio de Geometria
+    let quizScore = 0;
+    let level = 1;
+    let questions = [
+      { question: "Quantos lados tem um triângulo?", answer: 3 },
+      { question: "Quantos lados tem um quadrado?", answer: 4 },
+      { question: "Quantos lados tem um pentágono?", answer: 5 },
+      { question: "Qual é a área de um retângulo de largura 4 e altura 5?", answer: 20 },
+      { question: "Qual é o perímetro de um quadrado de lado 3?", answer: 12 }
+    ];
+
+    function shuffleQuestions(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function startQuizGame() {
+      quizScore = 0;
+      level = 1;
+      shuffleQuestions(questions);
+      document.querySelector('#game-container .score').textContent = "Pontuação: " + quizScore;
+      document.querySelector('.input-section').style.display = "block";
+      askQuestion();
+    }
+
+    function askQuestion() {
+      if (level > questions.length) {
+        endQuizGame();
+        return;
+      }
+      const questionText = questions[level - 1].question;
+      document.querySelector('#game-container .question').textContent = `Pergunta ${level} de ${questions.length}: ${questionText}`;
+      document.getElementById("userAnswer").value = "";
+    }
+
+    function submitAnswer() {
+      const userAnswer = document.getElementById("userAnswer").value;
+      if (userAnswer === "") return;
+
+      const correctAnswer = questions[level - 1].answer;
+      const feedback = document.querySelector('#game-container .result');
+
+      if (parseInt(userAnswer) === correctAnswer) {
+        quizScore += 15;
+        level++;
+        feedback.textContent = "Resposta correta!";
+        feedback.className = "result correct";
+      } else {
+        quizScore -= 10;
+        feedback.textContent = "Resposta incorreta. Você perdeu 10 pontos!";
+        feedback.className = "result incorrect";
+      }
+
+      document.querySelector('#game-container .score').textContent = "Pontuação: " + quizScore;
+      askQuestion();
+    }
+
+    function endQuizGame() {
+      document.querySelector('#game-container .question').textContent = "Parabéns! Você completou o jogo.";
+      document.querySelector('#game-container .result').textContent = "Pontuação final: " + quizScore;
+      document.querySelector('#game-container .score').textContent = "";
+      document.querySelector('.input-section').style.display = "none";
+    }
+  </script>
+</body>
+</html>
