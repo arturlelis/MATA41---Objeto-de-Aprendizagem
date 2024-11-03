@@ -1,2 +1,2 @@
-# MATA41---Objeto-de-Aprendizagem
+# MATA41 - Objeto-de-Aprendizagem
 Repositório - OA.
